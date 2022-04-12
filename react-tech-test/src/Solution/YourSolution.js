@@ -1,11 +1,11 @@
 import '../AdditionalFiles/App.css';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
+import { calculateProfit } from './utils';
 
 //This is the API url to fetch from
 const API_URL = 'https://matchesfashion.com/api/products';
 const TAX_RATE = 0.08;
-
 function YourSolution() {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(0);
@@ -40,6 +40,7 @@ function YourSolution() {
             <th>Quantity Sold</th>
             <th>Sold Price</th>
             <th>Cost To Business</th>
+            <th>Profit after Tax</th>
           </tr>
         </thead>
         <tbody>
@@ -52,6 +53,7 @@ function YourSolution() {
                 <td>{product.quantitySold}</td>
                 <td>£{product.soldPrice}</td>
                 <td>£{product.costToBusiness}</td>
+                <td>£{calculateProfit(product)}</td>
               </tr>
             );
           })}
