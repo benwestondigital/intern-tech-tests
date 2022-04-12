@@ -8,14 +8,16 @@ const TAX_RATE = 0.08;
 
 function YourSolution() {
   const [data, setData] = useState([]);
-  const [pageNum, setPageNum] = useState(0);
+  const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [itemCount, setItemCount] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fetchedData = await fetch(`${API_URL}&page=${pageNum}`);
-        const { products } = await fetchedData.json();
+        const fetchedData = await fetch(`${API_URL}&page=${page}`);
+        const { products, count } = await fetchedData.json();
+        setItemCount(count);
         setData(products);
         setIsLoading(false);
       } catch (err) {
@@ -23,10 +25,11 @@ function YourSolution() {
       }
     };
     fetchData();
-  }, [pageNum]);
+  }, [page]);
 
-  if (isLoading) return <p>Loading...</p>;
-  return (
+  return isLoading ? (
+    <p>Loading...</p>
+  ) : (
     <div className='App'>
       <table id='products'>
         <thead>
@@ -54,10 +57,27 @@ function YourSolution() {
           })}
         </tbody>
       </table>
-      <button>First Page</button>
-      <button>Previous Page</button>
-      <button>Next Page</button>
-      <button>Last Page</button>
+      <button onClick={() => setPage(0)} disabled={page === 0}>
+        First Page
+      </button>
+      <button
+        onClick={() => setPage(currPage => currPage - 1)}
+        disabled={page === 0}
+      >
+        Previous Page
+      </button>
+      <button
+        onClick={() => setPage(currPage => currPage + 1)}
+        disabled={10 * page >= itemCount}
+      >
+        Next Page
+      </button>
+      <button
+        onClick={() => setPage(itemCount / 10)}
+        disabled={10 * page >= itemCount}
+      >
+        Last Page
+      </button>
     </div>
   );
 }
